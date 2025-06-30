@@ -1,0 +1,11 @@
+fx_version 'cerulean'
+game 'gta5'
+lua54 'yes'
+use_fxv2_oal 'yes'
+description 'Stomach Ache system for Leypak'
+version '1.5.5'
+
+shared_script '@ox_lib/init.lua'
+client_script 'client.lua'
+server_script 'server.lua'
+file 'config.lua'
