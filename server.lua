@@ -4,8 +4,9 @@ local config = require 'config'
 -- function
 local function checkStomach(src, player)
     local playerState = Player(src).state
+    local inProgress = lib.callback.await('stomachache:client:inProgress', src)
 
-    if not playerState.isLoggedIn then return end
+    if not playerState.isLoggedIn or inProgress then return end
 
     local hunger = playerState.hunger
     local thirst = playerState.thirst
@@ -13,7 +14,7 @@ local function checkStomach(src, player)
     local maxHealth = GetPedMaxHealth(xPed)
     local minHealth = (config.MinHealth / 100) * maxHealth
 
-    if ((hunger or 0) <= config.MinHunger or (thirst or 0) <= config.MinThirst) and (not playerState.isDead and GetEntityHealth(xPed) > minHealth)  then
+    if ((hunger or 0) <= config.MinHunger or (thirst or 0) <= config.MinThirst) and (not playerState.isDead and GetEntityHealth(xPed) < minHealth)  then
         local playerStomach = player.Functions.GetMetaData('stomachAche')
 
         if not playerStomach then
@@ -29,6 +30,7 @@ end
 -- loop
 Citizen.CreateThread(function()
     local delay = 60000 * config.CheckStomach
+
     while true do
         Citizen.Wait(delay)
         for src, player in pairs(qbx:GetQBPlayers()) do
