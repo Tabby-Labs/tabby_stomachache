@@ -1,11 +1,14 @@
 local qbx = exports.qbx_core
 local config = require 'config'
 
+local inProgress = false
+
 -- event
 RegisterNetEvent('stomachache:client:StomachEffect', function()
-    if not qbx:GetPlayerData().metadata.stomachAche then return end
+    if not qbx:GetPlayerData().metadata.stomachAche or inProgress then return end
 
     local ped = cache.ped
+    inProgress = true
 
     if not IsEntityPlayingAnim(ped, config.Animation.dict, config.Animation.anim, 3) then
         lib.playAnim(ped, config.Animation.dict, config.Animation.anim, 1.0, 1.0, -1, 1, 0, false, false, false) 
@@ -24,10 +27,15 @@ RegisterNetEvent('stomachache:client:StomachEffect', function()
         },
     }) then
         TaskPlayAnim(ped, config.Animation.dict, 'exit', 1.0, 8.0, -1, 1, -1, false, false, false)
+        inProgress = false
     end
 end)
 
 -- callback
 lib.callback.register('stomachache:client:RemoveAche', function()
     -- progressbar -> return true/false
+end)
+
+lib.callback.register('stomachache:client:inProgress', function()
+    return inProgress
 end)
