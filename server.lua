@@ -30,7 +30,7 @@ end
 Citizen.CreateThread(function()
     local delay = 60000 * config.CheckStomach
     while true do
-        Wait(delay)
+        Citizen.Wait(delay)
         for src, player in pairs(qbx:GetQBPlayers()) do
             checkStomach(src, player)
         end
