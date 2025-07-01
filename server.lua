@@ -14,7 +14,7 @@ local function checkStomach(src, player)
     local maxHealth = GetPedMaxHealth(xPed)
     local minHealth = (config.MinHealth / 100) * maxHealth
 
-    if ((hunger or 0) <= config.MinHunger or (thirst or 0) <= config.MinThirst) and (not playerState.isDead and GetEntityHealth(xPed) < minHealth)  then
+    if ((hunger or 0) <= config.MinHunger or (thirst or 0) <= config.MinThirst) and (not playerState.isDead and GetEntityHealth(xPed) <= minHealth)  then
         local playerStomach = player.Functions.GetMetaData('stomachAche')
 
         if not playerStomach then
@@ -52,7 +52,10 @@ qbx:CreateUseableItem(config.DrugItem, function(source, item)
 
     local useDrug = lib.callback.await('stomachache:client:RemoveAche', src)
 
-    if not useDrug then return end
-
-    exports.ox_inventory:RemoveItem(src, item.name, 1)
+    if not useDrug or not xPlayer.Functions.GetMetaData('stomachache') then return end
+    
+    if exports.ox_inventory:RemoveItem(src, item.name, 1) then
+        xPlayer.Functions.SetMetaData('stomachache', false)
+        qbx:Notify(src, 'your stomach recovers a little', 'success')
+    end
 end)
