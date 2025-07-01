@@ -33,9 +33,26 @@ end)
 
 -- callback
 lib.callback.register('stomachache:client:RemoveAche', function()
-    -- progressbar -> return true/false
-end)
-
-lib.callback.register('stomachache:client:inProgress', function()
-    return inProgress
+    if lib.progressBar({
+        duration = 5000,
+        label = 'Using Omeprazole',
+        useWhileDead = false,
+        canCancel = true,
+        disable = {
+            move = false,
+            car = false,
+            combat = true, 
+            mouse = false
+        },
+        anim = {
+            dict = 'mp_suicide',
+            clip = 'pill',
+        },
+    }) then
+        SetEntityHealth(cache.ped, GetEntityHealth(cache.ped) + math.random(10, 15))
+        return true
+    else
+        qbx:Notify('Action canceled', 'error')
+        return false
+    end
 end)
