@@ -20,8 +20,9 @@ CreateThread(function()
         if QBX.IsLoggedIn then
             if ((playerState.hunger or 0) <= 0 or (playerState.thirst or 0) <= 0) and not playerState.isDead then
                 local currentHealth = GetEntityHealth(cache.ped)
+                local minHealth = (50 / 100) * GetEntityMaxHealth(cache.ped)
 
-                if currentHealth > 150 then
+                if currentHealth > minHealth then
                     local decreaseThreshold = math.random(5, 10)
                     local newHealth = currentHealth - decreaseThreshold
                     SetEntityHealth(cache.ped, newHealth)
