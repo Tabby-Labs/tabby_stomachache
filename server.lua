@@ -4,9 +4,8 @@ local config = require 'config'
 -- function
 local function checkStomach(src, player)
     local playerState = Player(src).state
-    local inProgress = lib.callback.await('stomachache:client:inProgress', src)
 
-    if not playerState.isLoggedIn or inProgress then return end
+    if not playerState.isLoggedIn then return end
 
     local hunger = playerState.hunger
     local thirst = playerState.thirst
@@ -25,6 +24,7 @@ local function checkStomach(src, player)
     end
 
     print(player.Functions.GetMetaData('stomachAche'))
+    print(('CurrentHP: %s | minHealth: %s'):format(GetEntityHealth(xPed), minHealth))
 end
 
 -- loop
@@ -40,22 +40,26 @@ Citizen.CreateThread(function()
 end)
 
 -- useable item
+local oxInv = exports.ox_inventory
+
 qbx:CreateUseableItem(config.DrugItem, function(source, item)
     local src = source
     local xPlayer = qbx:GetPlayer(src)
 
     if not xPlayer then return end
 
-    local hasItem = exports.ox_inventory:Search(src, 'count', item.name) > 0
-    
+    local hasItem = oxInv:Search(src, 'count', item.name) > 0
+
     if not hasItem then return end
 
     local useDrug = lib.callback.await('stomachache:client:RemoveAche', src)
 
-    if not useDrug or not xPlayer.Functions.GetMetaData('stomachache') then return end
-    
-    if exports.ox_inventory:RemoveItem(src, item.name, 1) then
-        xPlayer.Functions.SetMetaData('stomachache', false)
+    if not useDrug then return end
+
+    if oxInv:RemoveItem(source, item.name, 1) then
+        if not xPlayer.Functions.GetMetaData('stomachAche') then return end
+
+        xPlayer.Functions.SetMetaData('stomachAche', false)
         qbx:Notify(src, 'your stomach recovers a little', 'success')
     end
 end)
