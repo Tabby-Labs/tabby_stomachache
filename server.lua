@@ -29,7 +29,7 @@ end
 
 -- loop
 Citizen.CreateThread(function()
-    local delay = 60000 * config.CheckStomach
+    local delay = ((config.CheckStomach >= 0) and config.CheckStomach or 1) * 60000
 
     while true do
         Citizen.Wait(delay)
