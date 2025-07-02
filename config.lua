@@ -1,9 +1,10 @@
 local config = {}
 
-config.CheckStomach = 5               -- How often to check player stomach in minutes
+-- Can't be 0
+config.CheckStomach = 5             -- How often to check player stomach in minutes
 
--- Minimum Hp, Thirst & Hunger before trigger the stomach ache
-config.MinHealth = 0
+-- Minimum Hp, Thirst & Hunger before trigger the stomach ache in percentage
+config.MinHealth = 50
 config.MinThirst = 0
 config.MinHunger = 0
 
